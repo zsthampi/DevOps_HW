@@ -1,0 +1,30 @@
+---
+- hosts: all
+  tasks:
+
+  - name: "create directory for vm"
+    file:
+      path: /home/vagrant/vm0
+      state: directory
+
+  - name: "vagrant init"
+    command: vagrant init ubuntu/trusty32
+    args:
+      chdir: /home/vagrant/vm0
+    register: init
+    failed_when: not(("'A `Vagrantfile` has been placed in this directory' in init.stdout") or ("'`Vagrantfile` already exists in this directory' in init.stderr"))
+
+  - name: "update Vagrantfile"
+    replace:
+      name: /home/vagrant/vm0/Vagrantfile
+      regexp: '# config.vm.provider .*\n.*\n.*\n.*\n.*\n.*\n.* end'
+      replace: "config.vm.provider \"virtualbox\" do |vb| \n vb.cpus = \"1\" \n vb.memory = \"512\" \n vb.customize ['modifyvm', :id, '--cableconnected1', 'on'] \n end"
+
+  - name: "vagrant up"
+    command: vagrant up
+    args:
+      chdir: /home/vagrant/vm0
+    register: up
+    failed_when: not(("'Machine booted and ready' in up.stdout") or ("'VirtualBox VM is already running' in up.stdout"))
+
+...

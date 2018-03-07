@@ -1,0 +1,2 @@
+[mini_vcl]
+192.168.33.13 ansible_ssh_user=vagrant ansible_ssh_private_key_file=./keys/mini_vcl.key

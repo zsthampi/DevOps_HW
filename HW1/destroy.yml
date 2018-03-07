@@ -1,0 +1,18 @@
+---
+- hosts: all
+  tasks:
+    # Update the Ubuntu Server
+    - name: "remove packages"
+      apt:
+        name: "{{ item }}"
+        state: absent
+        purge: yes
+      become: yes
+      become_user: root
+      with_items:
+        - build-essential
+        - dkms
+        - unzip
+        - wget
+
+...
